@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真似亜神社 - 絵馬作成</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+        <div class="sakura-container"></div>
+    <button class="hamburger-toggle" aria-label="Toggle navigation">
+    ☰
+    </button>
+    <nav class="nav-menu">
+        <a href="../../home.html" class="nav-item">ホーム</a>
+        <a href="../osirase.html" class="nav-item">お知らせ</a>
+        <a href="../omikuzi/index.html" class="nav-item">おみくじ</a>
+        <a href="../meigen.html" class="nav-item">名言紹介</a>
+        <a href="../yotei.html" class="nav-item">年中予定</a>
+    </nav>
+    <div class="container">
+        <header>
+            <h1>⛩ 絵馬作成 ⛩</h1>
+            <div id="rising-sun"></div>
+        </header>
+  <div id="sakura-container"></div>
+
+        <main>
+            <div class="canvas-container">
+                <canvas id="emaCanvas"></canvas>
+            </div>
+
+            <div class="controls glass-morphism">
+                <div class="text-controls">
+                    <input type="text" id="textInput" placeholder="テキストを入力">
+                    <input type="number" id="fontSize" value="20" min="10" max="100">
+                    <button id="addText" class="btn-traditional">テキスト追加</button>
+                </div>
+                <button id="download" class="btn-traditional">ダウンロード</button>
+            </div>
+        </main>
+
+        <div id="notification" class="notification"></div>
+        <div class="animation-container">
+            <div class="sakura-container"></div>
+            <div class="snow-container"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        function createSakura() {
+            const sakuraContainer = document.querySelector('.sakura-container');
+            const sakuraCount = 30;
+
+            for (let i = 0; i < sakuraCount; i++) {
+                const sakura = document.createElement('div');
+                sakura.className = 'sakura';
+                sakura.style.left = `${Math.random() * 100}vw`;
+                sakura.style.animationDelay = `${Math.random() * 10}s`;
+                sakura.style.opacity = Math.random() * 0.6 + 0.4;
+                sakuraContainer.appendChild(sakura);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', createSakura);
+    </script>
+</body>
+</html>
