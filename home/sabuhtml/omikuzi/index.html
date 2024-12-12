@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://tsukatte.com/wp-content/uploads/2021/11/sensu_hinomaru.png" type="image/png">
+    <title>真似亜神社おみくじ</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/japanese-elements.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+   <nav class="nav-menu">
+        <a href="../../home.html" class="nav-item">ホーム</a>
+        <a href="../osirase.html" class="nav-item">お知らせ</a>
+        <a href="../omikuzi/index.html" class="nav-item">おみくじ</a>
+        <a href="../meigen.html" class="nav-item">名言紹介</a>
+        <a href="../yotei.html" class="nav-item">年中予定</a>
+    </nav>
+    <div class="container">
+        <div class="background">
+            <div class="mount-fuji"></div>
+            <div class="torii-gate"></div>
+            <div class="hidden-element">
+                <h3>秘密の祝福</h3>
+                <p>今年もいい年になりますように！</p>
+            </div>
+            <div class="snow-container"></div>
+        </div>
+        
+        <div class="omikuji-section">
+            <h1>おみくじ</h1>
+            <div class="omikuji-box">
+                <i class="fas fa-box-open omikuji-icon"></i>
+            </div>
+            <button id="drawButton" class="draw-button">
+                おみくじを引く
+                <i class="fas fa-hand-paper"></i>
+            </button>
+        </div>
+
+        <div id="purificationModal" class="modal">
+            <div class="modal-content">
+                <div class="purification-animation">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                </div>
+                <p class="purification-text">お祓い中...</p>
+            </div>
+        </div>
+
+        <div id="resultModal" class="modal">
+            <div class="modal-content result-content">
+                <h2 class="result-title">結果</h2>
+                <p id="resultText" class="result-text"></p>
+                <button id="drawAgainButton" class="draw-button">
+                    もう一度引く
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="sakura-container"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

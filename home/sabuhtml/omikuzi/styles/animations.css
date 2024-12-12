@@ -1,0 +1,100 @@
+@keyframes snowfall {
+    0% {
+        transform: translateY(-100%) rotate(0deg);
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+@keyframes sakuraFall {
+    0% {
+        transform: translateY(-10%) rotate(0deg) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(50vh) rotate(360deg) translateX(100px);
+    }
+    75% {
+        transform: translateY(75vh) rotate(540deg) translateX(-100px);
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg) translateX(0);
+        opacity: 0;
+    }
+}
+
+@keyframes toriiGlow {
+    0% {
+        filter: drop-shadow(0 0 5px rgba(234, 56, 76, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 0 15px rgba(234, 56, 76, 0.8));
+    }
+    100% {
+        filter: drop-shadow(0 0 5px rgba(234, 56, 76, 0.5));
+    }
+}
+
+@keyframes purificationWand {
+    0% {
+        transform: rotate(-20deg) translateY(0);
+    }
+    50% {
+        transform: rotate(20deg) translateY(-10px);
+    }
+    100% {
+        transform: rotate(-20deg) translateY(0);
+    }
+}
+
+@keyframes resultReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    60% {
+        transform: scale(1.1) translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.snow {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: snowfall linear infinite;
+    filter: blur(1px);
+}
+
+.sakura {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--sakura-color);
+    border-radius: 12px 1px;
+    pointer-events: none;
+    animation: sakuraFall linear infinite;
+    opacity: 0.8;
+    transition: transform 0.3s ease;
+}
+
+.purification-animation i {
+    animation: purificationWand 1.5s ease-in-out infinite;
+    display: inline-block;
+}
+
+.result-content {
+    animation: resultReveal 0.8s ease-out forwards;
+}
+
+.torii-gate:hover {
+    animation: toriiGlow 2s infinite;
+}

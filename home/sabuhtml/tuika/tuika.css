@@ -1,0 +1,197 @@
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #87CEEB;
+    transition: background-color 5s ease;
+    overflow-y: auto;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
+                inset 0 0 15px rgba(255, 255, 255, 0.5);
+    animation: dropDown 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.popup h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.popup input {
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid rgba(221, 221, 221, 0.5);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    width: 80%;
+}
+
+.popup input:focus {
+    outline: none;
+    border-color: rgba(218, 165, 32, 0.6);
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.3);
+}
+
+.popup button {
+    padding: 12px 25px;
+    background: linear-gradient(45deg, #FFD700, #DAA520);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+}
+
+.popup button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(218, 165, 32, 0.4);
+}
+
+.orb {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.orb-white {
+    background: radial-gradient(circle at 30% 30%, #ffffff, rgba(255, 255, 255, 0.8));
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 40px rgba(255, 255, 255, 0.4);
+}
+
+.orb-gold {
+    background: radial-gradient(circle at 30% 30%, #FFD700, rgba(218, 165, 32, 0.8));
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                0 0 40px rgba(218, 165, 32, 0.4);
+}
+
+.orb-blue {
+    background: radial-gradient(circle at 30% 30%, #87CEEB, rgba(135, 206, 235, 0.8));
+    box-shadow: 0 0 20px rgba(135, 206, 235, 0.8),
+                0 0 40px rgba(135, 206, 235, 0.4);
+}
+
+.welcome-text {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", "ＭＳ 明朝", serif;
+    font-size: 48px;
+    background: linear-gradient(45deg, #FFD700, #DAA520);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0;
+    animation: welcomeTextAnimation 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    z-index: 10000;
+    pointer-events: none;
+}
+
+@keyframes dropDown {
+    0% {
+        top: -100%;
+        opacity: 0;
+        transform: translateX(-50%) scale(0.9);
+    }
+    60% {
+        transform: translateX(-50%) scale(1.1);
+    }
+    100% {
+        top: 20%;
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+}
+
+@keyframes welcomeTextAnimation {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -100%) scale(0.8);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+    }
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) scale(0.5);
+        opacity: 0;
+    }
+}
+
+@keyframes radialExpand {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+@keyframes smoothFloat {
+    0% {
+        transform: translate(0, 0);
+    }
+    33% {
+        transform: translate(10px, -15px);
+    }
+    66% {
+        transform: translate(-10px, -25px);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+.float-up {
+    animation: floatUp 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.radial-expand {
+    animation: radialExpand 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.smooth-float {
+    animation: smoothFloat 6s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}

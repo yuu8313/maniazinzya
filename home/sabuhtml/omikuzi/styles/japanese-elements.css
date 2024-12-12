@@ -1,0 +1,107 @@
+.torii-gate {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 180px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.torii-gate::before {
+    content: "⛩";
+    position: absolute;
+    font-size: 150px;
+    color: var(--torii-red);
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+}
+
+.torii-gate:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+
+.hidden-element {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    padding: 2rem;
+    border-radius: 1rem;
+    opacity: 0;
+    transition: all 0.5s ease;
+    text-align: center;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.hidden-element.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-20px);
+    pointer-events: auto;
+}
+
+.hidden-element h3 {
+    color: var(--ink-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hidden-element p {
+    color: var(--ink-color);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.mount-fuji {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(45deg, #E6E6E6, #F2F2F2);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    opacity: 0.8;
+}
+
+.mount-fuji::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, transparent 60%, rgba(255, 255, 255, 0.3));
+}
+
+.background::before {
+    content: '🎋';
+    position: absolute;
+    font-size: 40px;
+    left: 10%;
+    bottom: 20%;
+    opacity: 0.6;
+    transition: transform 0.3s ease;
+}
+
+.background::after {
+    content: '🏮';
+    position: absolute;
+    font-size: 40px;
+    right: 10%;
+    bottom: 20%;
+    opacity: 0.6;
+    transition: transform 0.3s ease;
+}
+
+.background::before:hover,
+.background::after:hover {
+    transform: scale(1.1);
+}

@@ -1,0 +1,21 @@
+:root {
+    --primary-color: #D64B4B;
+    --wood-color: #F3EAE2;
+    --gold-color: #B7994A;
+    --ink-color: #1A1A1A;
+    --sakura-color: #FFB7C5;
+    --torii-red: #EA384C;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Noto Serif JP", serif;
+    background: var(--wood-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
