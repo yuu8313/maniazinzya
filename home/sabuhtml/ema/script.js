@@ -233,3 +233,106 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
+function showEditDialog(textIndex) {
+  const dialog = document.createElement('div');
+  dialog.className = 'edit-dialog';
+  dialog.innerHTML = `
+    <label for="editText">テキスト:</label>
+    <input type="text" id="editText" value="${texts[textIndex].content}">
+    <label for="editFontSize">フォントサイズ:</label>
+    <input type="number" id="editFontSize" value="${texts[textIndex].size}" min="10" max="100">
+    <label for="editFontColor">フォント色:</label>
+    <input type="color" id="editFontColor" value="${texts[textIndex].color}">
+    <button id="saveEdit">保存</button>
+    <button id="cancelEdit">キャンセル</button>
+  `;
+
+  document.body.appendChild(dialog);
+
+  const saveEditBtn = document.getElementById('saveEdit');
+  const cancelEditBtn = document.getElementById('cancelEdit');
+
+  saveEditBtn.addEventListener('click', () => {
+    texts[textIndex].content = document.getElementById('editText').value;
+    texts[textIndex].size = parseInt(document.getElementById('editFontSize').value);
+    texts[textIndex].color = document.getElementById('editFontColor').value;
+    drawCanvas();
+    dialog.remove();
+    showNotification('テキストを更新しました');
+  });
+
+  cancelEditBtn.addEventListener('click', () => {
+    dialog.remove();
+  });
+}
+
+function showContextMenu(e, textIndex) {
+  const menu = document.createElement('div');
+  menu.className = 'context-menu';
+  menu.innerHTML = `
+    <div class="menu-item" data-action="delete">削除</div>
+    <div class="menu-item" data-action="edit">編集</div>
+  `;
+
+  menu.style.position = 'absolute';
+  menu.style.left = `${e.clientX}px`;
+  menu.style.top = `${e.clientY}px`;
+
+  document.body.appendChild(menu);
+
+  menu.addEventListener('click', (e) => {
+    const action = e.target.dataset.action;
+    if (action === 'delete') {
+      texts.splice(textIndex, 1);
+      drawCanvas();
+      showNotification('テキストを削除しました');
+    } else if (action === 'edit') {
+      showEditDialog(textIndex); 
+    }
+    menu.remove();
+  });
+
+  document.addEventListener('click', function removeMenu() {
+    menu.remove();
+    document.removeEventListener('click', removeMenu);
+  });
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func.apply(this, args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+window.addEventListener('resize', debounce(() => {
+  canvas.width = emaImage.width;
+  canvas.height = emaImage.height;
+  drawCanvas();
+  showNotification('キャンバスをリフレッシュしました');
+}, 300));
+
+document.getElementById('clearCanvas').addEventListener('click', () => {
+  texts = [];
+  drawCanvas();
+  showNotification('キャンバスをクリアしました');
+});
+
+const animateScroll = () => {
+  anime({
+    targets: '.scroll-element',
+    translateY: [50, 0],
+    opacity: [0, 1],
+    duration: 1500,
+    easing: 'easeOutQuad',
+    delay: anime.stagger(100),
+  });
+};
+
+window.addEventListener('scroll', debounce(animateScroll, 100));
+
