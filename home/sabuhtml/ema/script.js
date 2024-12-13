@@ -104,7 +104,6 @@ function initializeEditor() {
 
     if (window.marked && content.includes('*') || content.includes('#') || content.includes('`')) {
       content = marked.parse(content);
-      // Strip HTML tags but keep basic formatting
       content = content.replace(/<[^>]*>/g, '');
     }
 
@@ -152,7 +151,7 @@ function initializeEditor() {
             selectedText = text;
             dragStartX = x - text.x;
             dragStartY = y - text.y;
-            drawCanvas(); // Redraw to show selection
+            drawCanvas(); 
           }, 200);
         } else if (clickCount === 2) {
           clearTimeout(clickTimer);
@@ -177,6 +176,7 @@ function initializeEditor() {
     input.style.left = `${text.x}px`;
     input.style.top = `${text.y}px`;
     input.style.fontSize = `${text.size}px`;
+    input.className = 'glass-morphism';
     
     input.addEventListener('blur', () => {
       text.content = input.value;
@@ -251,6 +251,14 @@ function initializeEditor() {
   }
   setInterval(createSakura, 200);
 
+  const hamburgerToggle = document.querySelector('.hamburger-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+  
+  if (hamburgerToggle && navMenu) {
+    hamburgerToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+    });
+  }
   const risingSun = document.getElementById('rising-sun');
   if (window.anime) {
     anime({
