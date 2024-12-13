@@ -121,7 +121,8 @@ const fortunes = [
     { result: '末吉', message: '穏やかな一日を楽しんで' },
     { result: '小凶', message: '注意深く行動すると良いことが' },
     { result: '特大吉', message: '周囲を驚かせるような幸運が' },
-    { result: '極小吉', message: 'ささやかな喜び'}
+    { result: '極小吉', message: 'ささやかな喜び'},
+    { result: '超超レア吉', message: '誰かから4630万円振り込まれる'},
 
 ];
 
