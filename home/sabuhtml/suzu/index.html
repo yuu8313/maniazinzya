@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本坪鈴</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="sakura-container"></div>
+    <div class="yuki-container"></div>
+    
+    <div class="shrine-container">
+        <a href="../../home.html" class="torii-link">
+            <div class="torii">⛩</div>
+        </a>
+        <div class="bell-container">
+            <div class="suzu" id="suzu">
+                <img src="src/suzu.svg" alt="鈴" onerror="this.innerText='◎'">
+                <div class="glow"></div>
+            </div>
+            <div class="himo" id="himo" draggable="true">
+                <img src="src/himo.svg" alt="紐" onerror="this.innerText='|'">
+            </div>
+        </div>
+        <div class="notification" id="notification">
+            <span>紐を引いてください</span>
+        </div>
+    </div>
+
+    <audio id="bellSound" src="src/onsei.mp3"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
