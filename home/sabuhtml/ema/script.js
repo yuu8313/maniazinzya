@@ -1,4 +1,4 @@
-const loadScript = (url) => {
+function loadScript(url) {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
     script.src = url;
@@ -6,46 +6,34 @@ const loadScript = (url) => {
     script.onerror = reject;
     document.head.appendChild(script);
   });
-};
+}
 
-Promise.all([
-  loadScript('https://cdn.quilljs.com/1.3.6/quill.min.js'),
-  loadScript('https://cdn.jsdelivr.net/npm/marked/marked.min.js')
-]).then(() => {
-  initializeEditor();
-}).catch(console.error);
+async function loadLibraries() {
+  try {
+    await loadScript('https://cdn.jsdelivr.net/npm/marked/marked.min.js');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js');
+    console.log('Libraries loaded successfully');
+  } catch (error) {
+    console.error('Error loading libraries:', error);
+  }
+}
 
-function initializeEditor() {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadLibraries();
+
   const canvas = document.getElementById('emaCanvas');
   const ctx = canvas.getContext('2d');
   const textInput = document.getElementById('textInput');
   const fontSizeInput = document.getElementById('fontSize');
   const addTextBtn = document.getElementById('addText');
   const downloadBtn = document.getElementById('download');
-  
-  const quill = new Quill('#editor', {
-    theme: 'snow',
-    modules: {
-      toolbar: [
-        ['bold', 'italic', 'underline', 'strike'],
-        ['blockquote', 'code-block'],
-        [{ 'header': 1 }, { 'header': 2 }],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'script': 'sub'}, { 'script': 'super' }],
-        [{ 'size': ['small', false, 'large', 'huge'] }],
-        [{ 'color': [] }, { 'background': [] }],
-        ['link', 'image'],
-        ['clean']
-      ]
-    }
-  });
+  const markdownToggle = document.getElementById('markdownToggle');
 
   let texts = [];
   let isDragging = false;
   let selectedText = null;
   let dragStartX, dragStartY;
-  let clickCount = 0;
-  let clickTimer = null;
+  let isLeftButtonPressed = false;
 
   const emaImage = new Image();
   emaImage.crossOrigin = "anonymous";  
@@ -56,148 +44,84 @@ function initializeEditor() {
     drawCanvas();
   };
 
+  function processText(text) {
+    if (markdownToggle && markdownToggle.checked) {
+      return marked.parse(text).replace(/<[^>]*>/g, '');
+    }
+    return text;
+  }
+
   function drawCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(emaImage, 0, 0);
+    
     texts.forEach(text => {
-      ctx.save();
-      applyTextStyles(ctx, text);
-      ctx.fillText(text.content, text.x, text.y);
+      ctx.font = `${text.size}px ${text.font || 'serif'}`;
+      ctx.fillStyle = text.color || 'black';
+      
       if (text === selectedText) {
-        drawSelectionBox(ctx, text);
+        const metrics = ctx.measureText(text.content);
+        ctx.fillStyle = 'rgba(0, 123, 255, 0.2)';
+        ctx.fillRect(
+          text.x - 2,
+          text.y - text.size,
+          metrics.width + 4,
+          text.size + 4
+        );
       }
-      ctx.restore();
+      
+      ctx.fillStyle = text.color || 'black';
+      ctx.fillText(processText(text.content), text.x, text.y);
     });
   }
 
-  function applyTextStyles(ctx, text) {
-    ctx.font = `${text.style || ''} ${text.size}px ${text.font || 'serif'}`;
-    ctx.fillStyle = text.color || 'black';
-    if (text.shadow) {
-      ctx.shadowColor = 'rgba(0,0,0,0.5)';
-      ctx.shadowBlur = 4;
-      ctx.shadowOffsetX = 2;
-      ctx.shadowOffsetY = 2;
-    }
-  }
-
-  function drawSelectionBox(ctx, text) {
-    const metrics = ctx.measureText(text.content);
-    ctx.strokeStyle = '#00f';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(
-      text.x - 5,
-      text.y - text.size - 5,
-      metrics.width + 10,
-      text.size + 10
-    );
-  }
-
   addTextBtn.addEventListener('click', () => {
-    let content;
-    if (quill) {
-      const delta = quill.getContents();
-      content = quill.getText();
-    } else {
-      content = textInput.value;
-    }
-
-    if (window.marked && content.includes('*') || content.includes('#') || content.includes('`')) {
-      content = marked.parse(content);
-      content = content.replace(/<[^>]*>/g, '');
-    }
-
     const text = {
-      content,
+      content: textInput.value,
       size: parseInt(fontSizeInput.value),
       x: canvas.width / 2,
       y: canvas.height / 2,
-      style: quill ? getQuillStyles(quill) : '',
-      font: 'serif',
-      color: quill ? quill.getFormat().color || 'black' : 'black',
-      shadow: false
+      font: document.getElementById('fontFamily')?.value || 'serif',
+      color: document.getElementById('textColor')?.value || 'black'
     };
-
     texts.push(text);
     drawCanvas();
     showNotification('テキストを追加しました');
   });
 
-  function getQuillStyles(quill) {
-    const format = quill.getFormat();
-    let styles = [];
-    if (format.bold) styles.push('bold');
-    if (format.italic) styles.push('italic');
-    return styles.join(' ');
-  }
-
   canvas.addEventListener('mousedown', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+    if (e.button === 0) {
+      isLeftButtonPressed = true;
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-    texts.forEach((text, index) => {
-      ctx.font = `${text.style || ''} ${text.size}px ${text.font}`;
-      const metrics = ctx.measureText(text.content);
-      if (x >= text.x - 5 && x <= text.x + metrics.width + 5 &&
-          y >= text.y - text.size - 5 && y <= text.y + 5) {
-        
-        clickCount++;
-        
-        if (clickCount === 1) {
-          clickTimer = setTimeout(() => {
-            clickCount = 0;
-            isDragging = true;
-            selectedText = text;
-            dragStartX = x - text.x;
-            dragStartY = y - text.y;
-            drawCanvas(); 
-          }, 200);
-        } else if (clickCount === 2) {
-          clearTimeout(clickTimer);
-          clickCount = 0;
-          editText(text, index);
-        } else if (clickCount === 3) {
-          clearTimeout(clickTimer);
-          clickCount = 0;
-          texts.splice(index, 1);
-          drawCanvas();
-          showNotification('テキストを削除しました');
+      selectedText = null;
+
+      texts.forEach((text, index) => {
+        ctx.font = `${text.size}px ${text.font || 'serif'}`;
+        const metrics = ctx.measureText(processText(text.content));
+        if (x >= text.x && x <= text.x + metrics.width &&
+            y >= text.y - text.size && y <= text.y) {
+          
+          selectedText = text;
+          isDragging = true;
+          dragStartX = x - text.x;
+          dragStartY = y - text.y;
+
+          if (e.button === 2) {
+            e.preventDefault();
+            showContextMenu(e, index);
+          }
         }
-      }
-    });
+      });
+      
+      drawCanvas();
+    }
   });
 
-  function editText(text, index) {
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = text.content;
-    input.style.position = 'absolute';
-    input.style.left = `${text.x}px`;
-    input.style.top = `${text.y}px`;
-    input.style.fontSize = `${text.size}px`;
-    input.className = 'glass-morphism';
-    
-    input.addEventListener('blur', () => {
-      text.content = input.value;
-      drawCanvas();
-      input.remove();
-    });
-
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        text.content = input.value;
-        drawCanvas();
-        input.remove();
-      }
-    });
-
-    document.body.appendChild(input);
-    input.focus();
-  }
-
   canvas.addEventListener('mousemove', (e) => {
-    if (isDragging && selectedText) {
+    if (isDragging && selectedText && isLeftButtonPressed) {
       const rect = canvas.getBoundingClientRect();
       const x = (e.clientX - rect.left) * (canvas.width / rect.width);
       const y = (e.clientY - rect.top) * (canvas.height / rect.height);
@@ -208,11 +132,57 @@ function initializeEditor() {
     }
   });
 
-  canvas.addEventListener('mouseup', () => {
-    isDragging = false;
-    selectedText = null;
-    drawCanvas();
+  canvas.addEventListener('mouseup', (e) => {
+    if (e.button === 0) { 
+      isLeftButtonPressed = false;
+      isDragging = false;
+    }
   });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Delete' && selectedText) {
+      const index = texts.indexOf(selectedText);
+      if (index > -1) {
+        texts.splice(index, 1);
+        selectedText = null;
+        drawCanvas();
+        showNotification('テキストを削除しました');
+      }
+    }
+  });
+
+  function showContextMenu(e, textIndex) {
+    const menu = document.createElement('div');
+    menu.className = 'context-menu';
+    menu.innerHTML = `
+      <div class="menu-item" data-action="delete">削除</div>
+      <div class="menu-item" data-action="edit">編集</div>
+    `;
+    
+    menu.style.position = 'absolute';
+    menu.style.left = `${e.clientX}px`;
+    menu.style.top = `${e.clientY}px`;
+    
+    document.body.appendChild(menu);
+    
+    menu.addEventListener('click', (e) => {
+      const action = e.target.dataset.action;
+      if (action === 'delete') {
+        texts.splice(textIndex, 1);
+        drawCanvas();
+        showNotification('テキストを削除しました');
+      } else if (action === 'edit') {
+        textInput.value = texts[textIndex].content;
+        fontSizeInput.value = texts[textIndex].size;
+      }
+      menu.remove();
+    });
+    
+    document.addEventListener('click', function removeMenu() {
+      menu.remove();
+      document.removeEventListener('click', removeMenu);
+    });
+  }
 
   downloadBtn.addEventListener('click', () => {
     try {
@@ -249,18 +219,11 @@ function initializeEditor() {
       sakura.remove();
     }, 10000);
   }
+  
   setInterval(createSakura, 200);
 
-  const hamburgerToggle = document.querySelector('.hamburger-toggle');
-  const navMenu = document.querySelector('.nav-menu');
-  
-  if (hamburgerToggle && navMenu) {
-    hamburgerToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('open');
-    });
-  }
   const risingSun = document.getElementById('rising-sun');
-  if (window.anime) {
+  if (risingSun && window.anime) {
     anime({
       targets: risingSun,
       translateY: [-50, 0],
@@ -269,4 +232,4 @@ function initializeEditor() {
       easing: 'easeOutQuad'
     });
   }
-}
+});
