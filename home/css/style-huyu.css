@@ -53,6 +53,10 @@ body {
 }
 
 
+.kaneiro {
+  color: #FF0000;
+}
+
 .nav-menu {
     position: fixed;
     top: 0;

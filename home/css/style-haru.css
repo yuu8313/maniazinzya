@@ -11,6 +11,9 @@ body {
 .hidden {
     display: none;
 }
+.kaneiro {
+  color: #FF0000;
+}
 
 .hamburger-toggle {
     position: fixed;
