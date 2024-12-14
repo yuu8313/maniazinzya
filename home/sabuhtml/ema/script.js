@@ -44,11 +44,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     drawCanvas();
   };
 
-  function processText(text) {
-    if (markdownToggle && markdownToggle.checked) {
-      return marked.parse(text).replace(/<[^>]*>/g, '');
-    }
+  function processMarkdown(text) {
+    text = text.replace(/\*\*(.*?)\*\*/g, '𝐁$1𝐁');
+    text = text.replace(/\*(.*?)\*/g, '𝘐$1𝘐');
+    text = text.replace(/~~(.*?)~~/g, '̶$1̶');
+    text = text.replace(/<u>(.*?)<\/u>/g, '_$1_');
+    
     return text;
+  }
+
+  function drawText(ctx, text, x, y, style) {
+    const processedText = processMarkdown(text);
+    let currentX = x;
+    
+    for (let i = 0; i < processedText.length; i++) {
+      const char = processedText[i];
+      
+      if (char === '𝐁') {
+        ctx.font = `bold ${style.size}px ${style.font}`;
+        continue;
+      } else if (char === '𝘐') {
+        ctx.font = `italic ${style.size}px ${style.font}`;
+        continue;
+      } else if (char === '̶') {
+        const metrics = ctx.measureText(processedText[i + 1]);
+        const lineY = y - style.size * 0.3;
+        ctx.beginPath();
+        ctx.moveTo(currentX, lineY);
+        ctx.lineTo(currentX + metrics.width, lineY);
+        ctx.stroke();
+        continue;
+      } else if (char === '_') {
+        const metrics = ctx.measureText(processedText[i + 1]);
+        ctx.beginPath();
+        ctx.moveTo(currentX, y + 2);
+        ctx.lineTo(currentX + metrics.width, y + 2);
+        ctx.stroke();
+        continue;
+      }
+      
+      ctx.fillText(char, currentX, y);
+      currentX += ctx.measureText(char).width;
+    }
   }
 
   function drawCanvas() {
@@ -56,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ctx.drawImage(emaImage, 0, 0);
     
     texts.forEach(text => {
-      ctx.font = ${text.size}px ${text.font || 'serif'};
+      ctx.font = `${text.size}px ${text.font || 'serif'}`;
       ctx.fillStyle = text.color || 'black';
       
       if (text === selectedText) {
@@ -71,7 +108,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       
       ctx.fillStyle = text.color || 'black';
-      ctx.fillText(processText(text.content), text.x, text.y);
+      drawText(ctx, text.content, text.x, text.y, {
+        size: text.size,
+        font: text.font || 'serif'
+      });
     });
   }
 
@@ -90,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   canvas.addEventListener('mousedown', (e) => {
-    if (e.button === 0) {
+    if (e.button === 0) { 
       isLeftButtonPressed = true;
       const rect = canvas.getBoundingClientRect();
       const x = (e.clientX - rect.left) * (canvas.width / rect.width);
@@ -99,8 +139,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       selectedText = null;
 
       texts.forEach((text, index) => {
-        ctx.font = ${text.size}px ${text.font || 'serif'};
-        const metrics = ctx.measureText(processText(text.content));
+        ctx.font = `${text.size}px ${text.font || 'serif'}`;
+        const metrics = ctx.measureText(processMarkdown(text.content));
         if (x >= text.x && x <= text.x + metrics.width &&
             y >= text.y - text.size && y <= text.y) {
           
@@ -154,14 +194,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   function showContextMenu(e, textIndex) {
     const menu = document.createElement('div');
     menu.className = 'context-menu';
-    menu.innerHTML = 
+    menu.innerHTML = `
       <div class="menu-item" data-action="delete">削除</div>
       <div class="menu-item" data-action="edit">編集</div>
-    ;
+    `;
     
     menu.style.position = 'absolute';
-    menu.style.left = ${e.clientX}px;
-    menu.style.top = ${e.clientY}px;
+    menu.style.left = `${e.clientX}px`;
+    menu.style.top = `${e.clientY}px`;
     
     document.body.appendChild(menu);
     
