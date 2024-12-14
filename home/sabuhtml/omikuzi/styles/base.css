@@ -19,3 +19,48 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
 }
+.hidden {
+    display: none;
+}
+.kaneiro {
+  color: #FF0000;
+}
+
+.hamburger-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 200;
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        gap: 1rem;
+        padding-top: 4rem;
+        z-index: 100;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .nav-menu.open {
+        transform: translateY(0);
+    }
+
+    .nav-item {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+}

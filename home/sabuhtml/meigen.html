@@ -96,5 +96,16 @@
     }
 }
     </script>
+
+        <script>
+    const toggleButton = document.querySelector('.hamburger-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+
+    toggleButton.addEventListener('click', () => {
+        navMenu.classList.toggle('hidden');
+        navMenu.classList.toggle('open');
+    });
+</script>
+
 </body>
 </html>

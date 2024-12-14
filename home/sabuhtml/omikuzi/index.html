@@ -14,6 +14,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
 <body>
+
+        <div class="sakura-container"></div>
+    <button class="hamburger-toggle" aria-label="Toggle navigation">
+    ☰
+    </button>
+    
    <nav class="nav-menu">
         <a href="../../home.html" class="nav-item">ホーム</a>
         <a href="../osirase.html" class="nav-item">お知らせ</a>
@@ -66,5 +72,16 @@
         <div class="sakura-container"></div>
     </div>
     <script src="script.js"></script>
+
+        <script>
+    const toggleButton = document.querySelector('.hamburger-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+
+    toggleButton.addEventListener('click', () => {
+        navMenu.classList.toggle('hidden');
+        navMenu.classList.toggle('open');
+    });
+</script>
+
 </body>
 </html>
