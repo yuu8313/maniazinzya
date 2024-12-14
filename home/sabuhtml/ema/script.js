@@ -18,52 +18,61 @@ async function loadLibraries() {
   }
 }
 
-function processMarkdown(text) {
-  const styles = {
-    bold: false,
-    italic: false,
-    strikethrough: false,
-    underline: false
-  };
-  
-  text = text.replace(/\*\*(.*?)\*\*/g, (match, content) => {
-    return content;
+function processMarkdown(text, useMarkdown = false) {
+  if (!useMarkdown) {
+    return text;
+  }
+
+  text = text.replace(/\*\*\*\*(.*?)\*\*\*\*/g, (match, content) => {
+    return `<bold>${content}</bold>`;
   });
   
-  text = text.replace(/\*(.*?)\*/g, (match, content) => {
-    return content;
+  text = text.replace(/\*\*(.*?)\*\*/g, (match, content) => {
+    return `<italic>${content}</italic>`;
   });
   
   text = text.replace(/~~(.*?)~~/g, (match, content) => {
-    return content;
+    return `<strike>${content}</strike>`;
   });
   
   text = text.replace(/<u>(.*?)<\/u>/g, (match, content) => {
-    return content;
+    return `<underline>${content}</underline>`;
   });
   
   return text;
 }
 
-function drawText(ctx, text, x, y, style) {
+function drawText(ctx, text, x, y, style, useMarkdown = false) {
   ctx.save();
   
-  if (text.match(/\*\*(.*?)\*\*/)) {
-    ctx.font = `bold ${style.size}px ${style.font}`;
+  const processedText = processMarkdown(text, useMarkdown);
+  let finalText = processedText;
+  let isBold = false;
+  let isItalic = false;
+  
+  if (processedText.includes('<bold>')) {
+    isBold = true;
+    finalText = finalText.replace(/<bold>(.*?)<\/bold>/g, '$1');
   }
   
-  if (text.match(/\*(.*?)\*/)) {
-    ctx.font = `italic ${style.size}px ${style.font}`;
+  if (processedText.includes('<italic>')) {
+    isItalic = true;
+    finalText = finalText.replace(/<italic>(.*?)<\/italic>/g, '$1');
   }
   
-  const hasStrikethrough = text.match(/~~(.*?)~~/);
-  const hasUnderline = text.match(/<u>(.*?)<\/u>/);
+  finalText = finalText.replace(/<strike>(.*?)<\/strike>/g, '$1');
+  finalText = finalText.replace(/<underline>(.*?)<\/underline>/g, '$1');
   
-  const cleanText = processMarkdown(text);
-  ctx.fillText(cleanText, x, y);
+  let fontStyle = '';
+  if (isBold) fontStyle += 'bold ';
+  if (isItalic) fontStyle += 'italic ';
+  if (!fontStyle) fontStyle = 'normal ';
   
-  if (hasStrikethrough) {
-    const metrics = ctx.measureText(cleanText);
+  ctx.font = `${fontStyle}${style.size}px ${style.font}`;
+  ctx.fillText(finalText, x, y);
+  
+  if (processedText.includes('<strike>')) {
+    const metrics = ctx.measureText(finalText);
     const strikeY = y - style.size * 0.3;
     ctx.beginPath();
     ctx.moveTo(x, strikeY);
@@ -71,8 +80,8 @@ function drawText(ctx, text, x, y, style) {
     ctx.stroke();
   }
   
-  if (hasUnderline) {
-    const metrics = ctx.measureText(cleanText);
+  if (processedText.includes('<underline>')) {
+    const metrics = ctx.measureText(finalText);
     ctx.beginPath();
     ctx.moveTo(x, y + 2);
     ctx.lineTo(x + metrics.width, y + 2);
@@ -161,6 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const fontSizeInput = document.getElementById('fontSize');
   const addTextBtn = document.getElementById('addText');
   const downloadBtn = document.getElementById('download');
+  const markdownToggle = document.getElementById('markdownToggle');
 
   let texts = [];
   let isDragging = false;
@@ -200,7 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       drawText(ctx, text.content, text.x, text.y, {
         size: text.size,
         font: text.font || 'serif'
-      });
+      }, markdownToggle.checked);
     });
   }
 
@@ -229,7 +239,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       texts.forEach((text, index) => {
         ctx.font = `${text.size}px ${text.font || 'serif'}`;
-        const metrics = ctx.measureText(processMarkdown(text.content));
+        const metrics = ctx.measureText(text.content);
         if (x >= text.x && x <= text.x + metrics.width &&
             y >= text.y - text.size && y <= text.y) {
           
@@ -292,6 +302,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('ダウンロードエラー:', error);
       showNotification('画像のダウンロードに失敗しました');
     }
+  });
+
+  markdownToggle.addEventListener('change', () => {
+    drawCanvas();
   });
 
   initializeAnimations();
