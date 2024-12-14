@@ -1,0 +1,84 @@
+.clock-section {
+    margin: 2rem 0;
+    animation: slideInFromTop 0.8s ease-out;
+}
+
+.clock-section h2 {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.clock-section h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--kurenai), var(--aiiro));
+    animation: lineExpand 1s ease-out forwards;
+}
+
+.clock {
+    font-size: 2rem;
+    text-align: center;
+    color: var(--aiiro);
+    background: radial-gradient(circle at center, rgba(16, 87, 121, 0.05) 0%, transparent 70%);
+    padding: 1.5rem;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.clock:hover {
+    transform: scale(1.02);
+    background: radial-gradient(circle at center, rgba(16, 87, 121, 0.1) 0%, transparent 80%);
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes lineExpand {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes numberChange {
+    from {
+        transform: translateY(-5px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .clock {
+        font-size: 1.5rem;
+        padding: 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .clock-section,
+    .clock-section h2::after,
+    .clock {
+        animation: none;
+        transition: none;
+    }
+}

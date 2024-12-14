@@ -1,0 +1,109 @@
+.countdown-display, .midnight-section {
+    margin: 2rem 0;
+    animation: fadeInScale 0.8s ease-out;
+}
+
+.countdown-display h2, .midnight-section h2 {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.countdown-display h2::after, .midnight-section h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--kurenai), var(--aiiro));
+    animation: lineExpand 1s ease-out forwards 0.5s;
+}
+
+.countdown {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--kurenai);
+    text-align: center;
+    margin: 1rem 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, rgba(203, 64, 66, 0.05) 0%, transparent 100%);
+    padding: 1.5rem;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.countdown:hover {
+    transform: scale(1.02);
+    background: linear-gradient(135deg, rgba(203, 64, 66, 0.1) 0%, transparent 100%);
+}
+
+.alert {
+    animation: pulseAlert 2s infinite;
+    transition: all 0.3s ease;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulseAlert {
+    0% {
+        transform: scale(1);
+        background-color: var(--kurenai);
+    }
+    50% {
+        transform: scale(1.05);
+        background-color: #ff5555;
+    }
+    100% {
+        transform: scale(1);
+        background-color: var(--kurenai);
+    }
+}
+
+@keyframes lineExpand {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes numberChange {
+    from {
+        transform: translateY(-5px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .countdown {
+        font-size: 1.8rem;
+        padding: 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .countdown-display,
+    .midnight-section,
+    .countdown,
+    .alert,
+    .countdown-display h2::after,
+    .midnight-section h2::after {
+        animation: none;
+        transition: none;
+    }
+}

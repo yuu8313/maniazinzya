@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>あけおめ用時計</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/css/yuki.css">
+    <link rel="stylesheet" href="styles/css/torii.css">
+    <link rel="stylesheet" href="styles/css/countdown.css">
+    <link rel="stylesheet" href="styles/css/clock.css">
+    <link rel="stylesheet" href="styles/animation/animations.css">
+    <link rel="stylesheet" href="styles/animation/bouncingShapes.css">
+    <link rel="stylesheet" href="styles/shoji.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <div class="theme-toggle">
+        <button id="theme-toggle-btn" aria-label="テーマ切り替え">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+    <div class="container">
+        <div class="shoji left"></div>
+        <div class="shoji right"></div>
+        
+        <div class="main-content">
+            <div class="torii-section" onclick="window.location.href='../../home.html'">
+                <i class="fas fa-torii-gate"></i>
+            </div>
+
+            <div class="countdown-display newyear glass">
+                <h2>新年まで</h2>
+                <div id="newyear-countdown" class="countdown"></div>
+            </div>
+
+            <div class="midnight-section glass">
+                <h2>今日の深夜まで</h2>
+                <div id="midnight-countdown" class="countdown"></div>
+                <div id="five-min-alert" class="alert hidden">あと五分！！</div>
+            </div>
+
+            <div class="clock-section glass">
+                <h2>現在時刻</h2>
+                <div id="current-time" class="clock"></div>
+            </div>
+        </div>
+
+        <div class="snow-container">
+            <canvas id="snow"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const icon = themeToggleBtn.querySelector('i');
+        
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            
+            if (isDark) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+
+    <script src="js/snow.js"></script>
+    <script src="js/animation/animations.js"></script>
+    <script src="js/animation/bouncingShapes.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
