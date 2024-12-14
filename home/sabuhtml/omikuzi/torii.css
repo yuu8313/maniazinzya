@@ -1,0 +1,97 @@
+.torii-section {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    padding: 1rem;
+    border-radius: 12px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.torii-section:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, rgba(203, 64, 66, 0.1) 0%, rgba(16, 87, 121, 0.1) 100%);
+    animation: none;
+}
+
+.fa-torii-gate {
+    font-size: 4rem;
+    color: var(--kurenai);
+    margin-bottom: 1rem;
+    transition: all 0.5s ease;
+    position: relative;
+    display: inline-block;
+}
+
+.torii-section:hover .fa-torii-gate {
+    color: var(--aiiro);
+    transform: translateY(-2px) rotate(360deg);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateY(-2px) rotate(0deg); }
+    25% { transform: translateY(-2px) rotate(-10deg); }
+    75% { transform: translateY(-2px) rotate(10deg); }
+}
+
+.torii-section::before,
+.torii-section::after {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--kurenai), transparent);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.torii-section::before {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.torii-section::after {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.torii-section:hover::before {
+    opacity: 1;
+    width: 80%;
+}
+
+.torii-section:hover::after {
+    opacity: 1;
+    width: 80%;
+}
+
+.torii-section:active {
+    transform: scale(0.95);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .torii-section {
+        animation: none;
+    }
+    
+    .torii-section:hover .fa-torii-gate {
+        transform: none;
+        animation: none;
+    }
+}
