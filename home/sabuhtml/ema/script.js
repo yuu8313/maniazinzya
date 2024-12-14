@@ -18,6 +18,140 @@ async function loadLibraries() {
   }
 }
 
+function processMarkdown(text) {
+  const styles = {
+    bold: false,
+    italic: false,
+    strikethrough: false,
+    underline: false
+  };
+  
+  text = text.replace(/\*\*(.*?)\*\*/g, (match, content) => {
+    return content;
+  });
+  
+  text = text.replace(/\*(.*?)\*/g, (match, content) => {
+    return content;
+  });
+  
+  text = text.replace(/~~(.*?)~~/g, (match, content) => {
+    return content;
+  });
+  
+  text = text.replace(/<u>(.*?)<\/u>/g, (match, content) => {
+    return content;
+  });
+  
+  return text;
+}
+
+function drawText(ctx, text, x, y, style) {
+  ctx.save();
+  
+  if (text.match(/\*\*(.*?)\*\*/)) {
+    ctx.font = `bold ${style.size}px ${style.font}`;
+  }
+  
+  if (text.match(/\*(.*?)\*/)) {
+    ctx.font = `italic ${style.size}px ${style.font}`;
+  }
+  
+  const hasStrikethrough = text.match(/~~(.*?)~~/);
+  const hasUnderline = text.match(/<u>(.*?)<\/u>/);
+  
+  const cleanText = processMarkdown(text);
+  ctx.fillText(cleanText, x, y);
+  
+  if (hasStrikethrough) {
+    const metrics = ctx.measureText(cleanText);
+    const strikeY = y - style.size * 0.3;
+    ctx.beginPath();
+    ctx.moveTo(x, strikeY);
+    ctx.lineTo(x + metrics.width, strikeY);
+    ctx.stroke();
+  }
+  
+  if (hasUnderline) {
+    const metrics = ctx.measureText(cleanText);
+    ctx.beginPath();
+    ctx.moveTo(x, y + 2);
+    ctx.lineTo(x + metrics.width, y + 2);
+    ctx.stroke();
+  }
+  
+  ctx.restore();
+}
+
+function showContextMenu(e, textIndex, texts, drawCanvas) {
+  const menu = document.createElement('div');
+  menu.className = 'context-menu';
+  menu.innerHTML = `
+    <div class="menu-item" data-action="delete">削除</div>
+    <div class="menu-item" data-action="edit">編集</div>
+  `;
+  
+  menu.style.position = 'absolute';
+  menu.style.left = `${e.clientX}px`;
+  menu.style.top = `${e.clientY}px`;
+  
+  document.body.appendChild(menu);
+  
+  menu.addEventListener('click', (e) => {
+    const action = e.target.dataset.action;
+    if (action === 'delete') {
+      texts.splice(textIndex, 1);
+      drawCanvas();
+      showNotification('テキストを削除しました');
+    } else if (action === 'edit') {
+      document.getElementById('textInput').value = texts[textIndex].content;
+      document.getElementById('fontSize').value = texts[textIndex].size;
+    }
+    menu.remove();
+  });
+  
+  document.addEventListener('click', function removeMenu() {
+    menu.remove();
+    document.removeEventListener('click', removeMenu);
+  });
+}
+
+function createSakura() {
+  const sakura = document.createElement('div');
+  sakura.className = 'sakura';
+  sakura.style.left = Math.random() * 100 + 'vw';
+  sakura.style.width = Math.random() * 10 + 5 + 'px';
+  sakura.style.height = sakura.style.width;
+  
+  document.getElementById('sakura-container').appendChild(sakura);
+  setTimeout(() => {
+    sakura.remove();
+  }, 10000);
+}
+
+function showNotification(message) {
+  const notification = document.getElementById('notification');
+  notification.textContent = message;
+  notification.classList.add('show');
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 3000);
+}
+
+function initializeAnimations() {
+  setInterval(createSakura, 200);
+
+  const risingSun = document.getElementById('rising-sun');
+  if (risingSun && window.anime) {
+    anime({
+      targets: risingSun,
+      translateY: [-50, 0],
+      opacity: [0, 1],
+      duration: 2000,
+      easing: 'easeOutQuad'
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   await loadLibraries();
 
@@ -27,7 +161,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const fontSizeInput = document.getElementById('fontSize');
   const addTextBtn = document.getElementById('addText');
   const downloadBtn = document.getElementById('download');
-  const markdownToggle = document.getElementById('markdownToggle');
 
   let texts = [];
   let isDragging = false;
@@ -43,50 +176,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     canvas.height = emaImage.height;
     drawCanvas();
   };
-
-  function processMarkdown(text) {
-    text = text.replace(/\*\*(.*?)\*\*/g, '𝐁$1𝐁');
-    text = text.replace(/\*(.*?)\*/g, '𝘐$1𝘐');
-    text = text.replace(/~~(.*?)~~/g, '̶$1̶');
-    text = text.replace(/<u>(.*?)<\/u>/g, '_$1_');
-    
-    return text;
-  }
-
-  function drawText(ctx, text, x, y, style) {
-    const processedText = processMarkdown(text);
-    let currentX = x;
-    
-    for (let i = 0; i < processedText.length; i++) {
-      const char = processedText[i];
-      
-      if (char === '𝐁') {
-        ctx.font = `bold ${style.size}px ${style.font}`;
-        continue;
-      } else if (char === '𝘐') {
-        ctx.font = `italic ${style.size}px ${style.font}`;
-        continue;
-      } else if (char === '̶') {
-        const metrics = ctx.measureText(processedText[i + 1]);
-        const lineY = y - style.size * 0.3;
-        ctx.beginPath();
-        ctx.moveTo(currentX, lineY);
-        ctx.lineTo(currentX + metrics.width, lineY);
-        ctx.stroke();
-        continue;
-      } else if (char === '_') {
-        const metrics = ctx.measureText(processedText[i + 1]);
-        ctx.beginPath();
-        ctx.moveTo(currentX, y + 2);
-        ctx.lineTo(currentX + metrics.width, y + 2);
-        ctx.stroke();
-        continue;
-      }
-      
-      ctx.fillText(char, currentX, y);
-      currentX += ctx.measureText(char).width;
-    }
-  }
 
   function drawCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -130,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   canvas.addEventListener('mousedown', (e) => {
-    if (e.button === 0) { 
+    if (e.button === 0) {
       isLeftButtonPressed = true;
       const rect = canvas.getBoundingClientRect();
       const x = (e.clientX - rect.left) * (canvas.width / rect.width);
@@ -151,7 +240,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
           if (e.button === 2) {
             e.preventDefault();
-            showContextMenu(e, index);
+            showContextMenu(e, index, texts, drawCanvas);
           }
         }
       });
@@ -173,7 +262,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   canvas.addEventListener('mouseup', (e) => {
-    if (e.button === 0) { 
+    if (e.button === 0) {
       isLeftButtonPressed = false;
       isDragging = false;
     }
@@ -191,39 +280,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  function showContextMenu(e, textIndex) {
-    const menu = document.createElement('div');
-    menu.className = 'context-menu';
-    menu.innerHTML = `
-      <div class="menu-item" data-action="delete">削除</div>
-      <div class="menu-item" data-action="edit">編集</div>
-    `;
-    
-    menu.style.position = 'absolute';
-    menu.style.left = `${e.clientX}px`;
-    menu.style.top = `${e.clientY}px`;
-    
-    document.body.appendChild(menu);
-    
-    menu.addEventListener('click', (e) => {
-      const action = e.target.dataset.action;
-      if (action === 'delete') {
-        texts.splice(textIndex, 1);
-        drawCanvas();
-        showNotification('テキストを削除しました');
-      } else if (action === 'edit') {
-        textInput.value = texts[textIndex].content;
-        fontSizeInput.value = texts[textIndex].size;
-      }
-      menu.remove();
-    });
-    
-    document.addEventListener('click', function removeMenu() {
-      menu.remove();
-      document.removeEventListener('click', removeMenu);
-    });
-  }
-
   downloadBtn.addEventListener('click', () => {
     try {
       const dataURL = canvas.toDataURL('image/png');
@@ -238,38 +294,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  function showNotification(message) {
-    const notification = document.getElementById('notification');
-    notification.textContent = message;
-    notification.classList.add('show');
-    setTimeout(() => {
-      notification.classList.remove('show');
-    }, 3000);
-  }
-
-  function createSakura() {
-    const sakura = document.createElement('div');
-    sakura.className = 'sakura';
-    sakura.style.left = Math.random() * 100 + 'vw';
-    sakura.style.width = Math.random() * 10 + 5 + 'px';
-    sakura.style.height = sakura.style.width;
-    
-    document.getElementById('sakura-container').appendChild(sakura);
-    setTimeout(() => {
-      sakura.remove();
-    }, 10000);
-  }
-  
-  setInterval(createSakura, 200);
-
-  const risingSun = document.getElementById('rising-sun');
-  if (risingSun && window.anime) {
-    anime({
-      targets: risingSun,
-      translateY: [-50, 0],
-      opacity: [0, 1],
-      duration: 2000,
-      easing: 'easeOutQuad'
-    });
-  }
+  initializeAnimations();
 });
