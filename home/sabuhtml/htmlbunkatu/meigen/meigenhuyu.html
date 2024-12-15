@@ -3,47 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>真似亜神社 - 予定室</title>
-    <link id="style-haru" rel="stylesheet" href="../css/style-haru.css">
+    <title>真似亜神社 - 名言室</title>
+    <link id="style-haru" rel="stylesheet" href="../../../css/style-huyu.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" type="image/svg+xml" href="../../favicon/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="../../../../favicon/favicon.svg">
 </head>
 <body>
     <div class="sakura-container"></div>
     <button class="hamburger-toggle" aria-label="Toggle navigation">
     ☰
     </button>
-   <nav class="nav-menu">
-        <a href="../home.html" class="nav-item">ホーム</a>
-        <a href="osirase.html" class="nav-item">お知らせ</a>
-        <a href="omikuzi/index.html" class="nav-item">おみくじ</a>
-        <a href="meigen.html" class="nav-item">名言紹介</a>
-        <a href="yotei.html" class="nav-item">年中予定</a>
+    <nav class="nav-menu">
+        <a href="../../../home.html" class="nav-item">ホーム</a>
+        <a href="../../osirase.html" class="nav-item">お知らせ</a>
+        <a href="../../omikuzi/index.html" class="nav-item">おみくじ</a>
+        <a href="../../meigen.html" class="nav-item">名言紹介</a>
+        <a href="../../yotei.html" class="nav-item">年中予定</a>
     </nav>
     
     <main class="main-content">
         <h1 class="shrine-name">⛩ 真似亜神社 ⛩</h1>
-              
+     
         
         <div class="glass-card">
-            <h2><i class="fas fa-calendar-alt"></i> 年中行事</h2>
-            <ul class="news-list">
-                <li>1月1日 - あけおめ祭</li>
-                <li>2月3日 - おにはそと祭</li>
-                <li>4月1日 - はるのまつり</li>
-                <li>7月7日 - 七夕</li>
-                <li>12月31日 - 除夜の鐘とあけおめ待機</li>
+            <h2><i class="fas fa-book-open"></i> 名言辞典</h2>
+            <ul class="quotes-list">
+               <!-- テンプレ： <li>「名言」 - 人名</li> -->
+                <li>「和を以て貴しと為す」 - 聖徳太子</li>
+                <li>「私は今まで人生で一度も失敗をしたことはない。「うまくいかない方法を10000回見つけた」までだ」 - トーマス・エジソン</li>
+                <li>「一期一会」 - 茶道の心得</li>
+                <li>「石の上にも三年」 - 故事</li>
+                <li>「温故知新」 - 論語</li>
+                <li>「初心忘るべからず」 - 世阿弥</li>
+                <li>「ネギに上下はねーだろ！！」 - ウェブマニア</li>
+                <li>「ひ♡み♡ちゅ♡」 - ウェブマニア</li>
+                <li>「ぺゅ～さん落としてリアル一人にしてあげましたー！」 - ウェブマニア</li>
             </ul>
         </div>
         <h2 style="text-align: center;">カラーを変更</h2>
             <div class="service-buttons">
-            <button class="sakura-button" onclick="location.href='yotei'">春</button>
-            <button class="sakura-button" onclick="location.href='htmlbunkatu/yotei/yoteinatu.html'">夏</button>
-            <button class="sakura-button" onclick="location.href='htmlbunkatu/yotei/yoteiaki.html'">秋</button>
-            <button class="sakura-button" onclick="location.href='htmlbunkatu/yotei/yoteihuyu.html'">冬</button>
+                <button class="sakura-button" onclick="location.href='../../meigen.html'">春</button>
+                <button class="sakura-button" onclick="location.href='meigennatu.html'">夏</button>
+                <button class="sakura-button" onclick="location.href='meigenaki.html'">秋</button>
+                <button class="sakura-button" onclick="location.href='meigenhuyu.html'">冬</button>
             </div>
-      
+
     </main>
     
     <footer class="footer">
@@ -67,8 +72,7 @@
 
         document.addEventListener('DOMContentLoaded', createSakura);
 
-
-        // CSS変更
+    // CSS変更
     function switchCSS(season) {
     const links = document.querySelectorAll('link[rel="stylesheet"]');
     links.forEach(link => link.disabled = true);

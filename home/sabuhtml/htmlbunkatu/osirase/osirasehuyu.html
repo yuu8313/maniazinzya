@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>真似亜神社 - 予定室</title>
-    <link id="style-haru" rel="stylesheet" href="../css/style-haru.css">
+    <title>真似亜神社 - お知らせ室</title>
+    <link id="style-haru" rel="stylesheet" href="../../../css/style-huyu.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" type="image/svg+xml" href="../../favicon/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="../../../../favicon/favicon.svg">
 </head>
 <body>
     <div class="sakura-container"></div>
@@ -15,11 +15,11 @@
     ☰
     </button>
    <nav class="nav-menu">
-        <a href="../home.html" class="nav-item">ホーム</a>
-        <a href="osirase.html" class="nav-item">お知らせ</a>
-        <a href="omikuzi/index.html" class="nav-item">おみくじ</a>
-        <a href="meigen.html" class="nav-item">名言紹介</a>
-        <a href="yotei.html" class="nav-item">年中予定</a>
+        <a href="../../../home.html" class="nav-item">ホーム</a>
+        <a href="../../osirase.html" class="nav-item">お知らせ</a>
+        <a href="../../omikuzi/index.html" class="nav-item">おみくじ</a>
+        <a href="../../meigen.html" class="nav-item">名言紹介</a>
+        <a href="../../yotei.html" class="nav-item">年中予定</a>
     </nav>
     
     <main class="main-content">
@@ -27,23 +27,19 @@
               
         
         <div class="glass-card">
-            <h2><i class="fas fa-calendar-alt"></i> 年中行事</h2>
+            <h2><i class="fas fa-scroll"></i> お知らせ</h2>
             <ul class="news-list">
-                <li>1月1日 - あけおめ祭</li>
-                <li>2月3日 - おにはそと祭</li>
-                <li>4月1日 - はるのまつり</li>
-                <li>7月7日 - 七夕</li>
-                <li>12月31日 - 除夜の鐘とあけおめ待機</li>
+                <li>0:00分にあけおめ入力大会が開かれます。（豪華景品付き）</li>
             </ul>
         </div>
+
         <h2 style="text-align: center;">カラーを変更</h2>
             <div class="service-buttons">
-            <button class="sakura-button" onclick="location.href='yotei'">春</button>
-            <button class="sakura-button" onclick="location.href='htmlbunkatu/yotei/yoteinatu.html'">夏</button>
-            <button class="sakura-button" onclick="location.href='htmlbunkatu/yotei/yoteiaki.html'">秋</button>
-            <button class="sakura-button" onclick="location.href='htmlbunkatu/yotei/yoteihuyu.html'">冬</button>
+                <button class="sakura-button" onclick="location.href='../../osirase.html'">春</button>
+                <button class="sakura-button" onclick="location.href='osirasenatu.html'">夏</button>
+                <button class="sakura-button" onclick="location.href='osiraseaki.html'">秋</button>
+                <button class="sakura-button" onclick="location.href='osirasehuyu.html'">冬</button>
             </div>
-      
     </main>
     
     <footer class="footer">
@@ -66,9 +62,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', createSakura);
-
-
-        // CSS変更
+    // CSS変更
     function switchCSS(season) {
     const links = document.querySelectorAll('link[rel="stylesheet"]');
     links.forEach(link => link.disabled = true);
